@@ -22,7 +22,13 @@ const LoginForm = () => {
         }
         else{
             setEmptyError(false);
+        }
+
+        if ( !((inputName.trim() === '') || (inputPassword === '')) ){
             setLoginSuccess(true);
+        }
+        else{
+            setLoginSuccess(false);
         }
 
     }
