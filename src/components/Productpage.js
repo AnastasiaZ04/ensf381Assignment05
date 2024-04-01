@@ -4,7 +4,6 @@ import ProductList from './ProductList';
 import Cart from './Cart';
 import Footer from './Footer';
 import productsData from '../data/products';
-import { Link } from 'react-router-dom';
 
 const Productpage = () => {
   const [cartItems, setCartItems] = useState([]);
