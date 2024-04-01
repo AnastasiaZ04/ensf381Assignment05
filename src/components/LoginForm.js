@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 
 const LoginForm = () => {
     const [emptyError, setEmptyError] = useState(false);
-    const [loginSuccess, setLoginSuccess] = useState(false);
     const [inputName, setInputName] = useState("");
     const [inputPassword, setInputPassword] = useState("");
 
@@ -24,13 +23,6 @@ const LoginForm = () => {
             setEmptyError(false);
         }
 
-        if ( !((inputName.trim() === '') || (inputPassword === '')) ){
-            setLoginSuccess(true);
-        }
-        else{
-            setLoginSuccess(false);
-        }
-
     }
 
     return(
@@ -39,12 +31,6 @@ const LoginForm = () => {
         { emptyError && (
           <div>
             <p style={{color:'red'}}>All fields are required!</p>
-          </div>
-        )}
-
-        { loginSuccess && (
-          <div>
-            <p style={{color:'green'}}>User signed up successfully!</p>
           </div>
         )}
 
