@@ -8,6 +8,7 @@ const SignupForm = () => {
     const [inputPassword, setInputPassword] = useState("");
     const [inputConfirmPassword, setInputConfirmPassword] = useState("");
     const [inputEmail, setInputEmail] = useState("");
+    const [message, setMessage] = useState("");
 
     function handleUsernameChange(event){
         setInputName(event.target.value);
@@ -25,7 +26,7 @@ const SignupForm = () => {
         setInputEmail(event.target.value);
     }
 
-    function handleSubmit(event){
+    async function handleSubmit(event){
         event.preventDefault(); //prevents button from submitting form 
 
         if( (inputName.trim() === '') || (inputPassword === '') || (inputConfirmPassword === '') || (inputEmail === '')){
@@ -43,16 +44,55 @@ const SignupForm = () => {
         }
 
         if (!((inputName.trim() === '') || (inputPassword === '') || (inputConfirmPassword === '') || (inputEmail === '')) && (inputPassword === inputConfirmPassword)){
-            setSignupSuccess(true);
+            try{
+                 const response = await fetch('http://127.0.0.1:5000/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        'username': inputName, 
+                        'password': inputPassword, 
+                        'email': inputEmail
+                    }),
+                });
+                const data = await response.json();
+                if (response.ok){
+                    setSignupSuccess(true);
+                }
+                else{
+                    setSignupSuccess(false);
+                }
+                setMessage(data.message);
+            }
+            catch(error){
+                console.error("Error:", error);
+            }
+
+
+
+                //.then(response => {
+                    //if (response.ok){
+                        //setSignupSuccess(true);  
+                    //}
+                    //else{
+                        //setSignupSuccess(false);
+                        //throw new Error('Registration failed.');
+                    //}
+
+                //})
+            //.then(data => setMessage(data.message))
+            //.catch(error => {
+                //setMessage('Registration failed.');
+                //setSignupSuccess(false);
+            //});
+
         }
-        else{
-            setSignupSuccess(false);
         }
-    }
 
     return(
         <div>
-
+        <h2>Signup</h2>
         { emptyError && (
           <div>
             <p style={{color:'red'}}>All fields are required!</p>
@@ -67,9 +107,16 @@ const SignupForm = () => {
 
         { signupSuccess && (
           <div>
-            <p style={{color:'green'}}>User signed up successfully!</p>
+            <p style={{color:'green'}}>{message}</p>
           </div>
         )}
+
+        { !signupSuccess && (
+          <div>
+            <p style={{color:'red'}}>{message}</p>
+          </div>
+        )}
+
 
         <form name = "login" onSubmit={handleSubmit}>
         <label for = "username">Username:</label>

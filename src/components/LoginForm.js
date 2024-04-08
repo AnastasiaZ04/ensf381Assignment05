@@ -1,9 +1,14 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const LoginForm = () => {
     const [emptyError, setEmptyError] = useState(false);
     const [inputName, setInputName] = useState("");
     const [inputPassword, setInputPassword] = useState("");
+    //const [loginSuccess, setLoginSuccess] = useState(false); 
+    const [message, setMessage] = useState("");
+    const [authenticated, setAuthenticated] = useState(false);
+    const navigate = useNavigate();
 
     function handleUsernameChange(event){
         setInputName(event.target.value);
@@ -13,7 +18,7 @@ const LoginForm = () => {
         setInputPassword(event.target.value);
     }
 
-    function handleSubmit(event){
+    async function handleSubmit(event){
         event.preventDefault(); //prevents button from submitting form 
 
         if( (inputName.trim() === '') || (inputPassword === '')){
@@ -21,18 +26,55 @@ const LoginForm = () => {
         }
         else{
             setEmptyError(false);
+            try{
+                const response = await fetch('http://127.0.0.1:5000/authenticate', {
+                    method: 'POST', 
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        'username': inputName, 
+                        'password': inputPassword
+                    }),
+                }); 
+                const data = await response.json();
+                if (response.ok){
+                    //setLoginSuccess(true);
+                    setAuthenticated(true);
+                }
+                else{
+                    //setLoginSuccess(false);
+                    //setMessage(data.message);
+                    setAuthenticated(false);
+                }
+                setMessage(data.message);
+            }
+            catch(error){
+                setMessage('Authentication failed. Incorrect username or password.');
+            }
         }
+    }
 
+    if (authenticated){
+        navigate("/products");
     }
 
     return(
         <div>
-
+        <h2>Login</h2>
         { emptyError && (
           <div>
             <p style={{color:'red'}}>All fields are required!</p>
           </div>
         )}
+
+        { !authenticated && (
+          <div>
+            <p style={{color:'red'}}>{message}</p>
+          </div>
+        )}
+
+
 
         <form name = "login" onSubmit={handleSubmit}>
         <label for = "username">Username:</label>
