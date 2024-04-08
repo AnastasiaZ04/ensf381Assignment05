@@ -1,3 +1,5 @@
+// Group Members: Anastasia Zaharia (30184046) and Bhavna Rikhi (30171786)
+
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';

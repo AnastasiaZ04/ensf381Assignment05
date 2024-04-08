@@ -20,7 +20,6 @@ def register_user():
             return jsonify({"message": "Username is already taken!"}), 400
     
     users.append({'username': entered_username, 'password': entered_password, 'email': entered_email})
-    #print(users)
     return jsonify({"message": "User signed up successfully!"}), 200
 
 @app.route('/authenticate', methods=['POST'])
