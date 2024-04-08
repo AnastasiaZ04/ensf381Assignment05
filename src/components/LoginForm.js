@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const LoginForm = () => {
+const LoginForm = ({login}) => {
     const [emptyError, setEmptyError] = useState(false);
     const [inputName, setInputName] = useState("");
     const [inputPassword, setInputPassword] = useState("");
-    //const [loginSuccess, setLoginSuccess] = useState(false); 
     const [message, setMessage] = useState("");
     const [authenticated, setAuthenticated] = useState(false);
     const navigate = useNavigate();
@@ -39,18 +38,21 @@ const LoginForm = () => {
                 }); 
                 const data = await response.json();
                 if (response.ok){
-                    //setLoginSuccess(true);
                     setAuthenticated(true);
+                    localStorage.setItem('loginSuccess', true);
+                    window.location.href = '/products';
                 }
                 else{
-                    //setLoginSuccess(false);
-                    //setMessage(data.message);
                     setAuthenticated(false);
+                    localStorage.setItem('loginSuccess', false);
+
                 }
                 setMessage(data.message);
             }
             catch(error){
+                console.log(error);
                 setMessage('Authentication failed. Incorrect username or password.');
+                setAuthenticated(false);
             }
         }
     }

@@ -1,31 +1,29 @@
-import React, { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'; // Import BrowserRouter as Router and Routes
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'; // Import BrowserRouter as Router and Routes
 import Homepage from './components/Homepage';
 import Productpage from './components/Productpage';
 import LoginPage from './components/LoginPage';
 
-
-
 const App = () => {
-  const [authenticated, setAuthenticated] = useState(false);
-
-  const goToProducts = () => {
-    if (authenticated){
-      return <Navigate to = "/products"/>
+  const [loggedIn, setLoggedIn] = useState(false);
+  useEffect(() => {
+    const loginState = localStorage.getItem('loginSuccess');
+    if (loginState === "true"){
+      setLoggedIn(true);
+      localStorage.clear();
     }
     else{
-      return <Navigate to = "/login"/>
+      setLoggedIn(false);
     }
-
-  }
+  }, [])
 
   return (
     <Router>
       <div>
         <Routes>
           <Route path="/" element={<Homepage />} />
-          <Route path="/products" element={goToProducts()} />    
-          <Route path='/login' element={<LoginPage setAuthenticated = {setAuthenticated} />} />
+          <Route path="/products" element={localStorage.getItem('loginSuccess') ? <Productpage/> : <LoginPage/>} />    
+          <Route path="/login" element={<LoginPage/>} />
         </Routes>
       </div>
     </Router>
